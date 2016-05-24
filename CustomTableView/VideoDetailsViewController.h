@@ -9,7 +9,7 @@
 #import "VideoViewController.h"
 #import "Video.h"
 
-@interface VideoDetailsViewController : VideoViewController
+@interface VideoDetailsViewController : UIViewController
 
 @property (strong, nonatomic) Video *video;
 

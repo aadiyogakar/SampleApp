@@ -13,5 +13,7 @@
 @property (strong, nonatomic) NSString *title;
 @property (strong, nonatomic) NSString *description;
 @property (strong, nonatomic) NSString *imageURL;
+@property (strong, nonatomic) NSString *imageURLHD;
+@property (strong, nonatomic) NSString *videoId;
 
 @end

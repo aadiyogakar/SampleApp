@@ -9,7 +9,9 @@
 #import "VideoDetailsViewController.h"
 
 @interface VideoDetailsViewController ()
-
+@property (weak, nonatomic) IBOutlet UILabel *headline;
+@property (weak, nonatomic) IBOutlet UIImageView *videoImage;
+@property (weak, nonatomic) IBOutlet UILabel *details;
 @end
 
 @implementation VideoDetailsViewController
@@ -17,9 +19,7 @@
 - (void)setVideo:(Video *)video
 {
     _video = video;
-    if (self.view.window) {
-        [self updateUI];
-    }
+    [self updateUI];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -30,7 +30,11 @@
 
 - (void)updateUI
 {
-    
+    self.headline.text = _video.title;
+    self.details.text = _video.description;
+    NSURL *imageURL = [NSURL URLWithString:_video.imageURLHD];
+    NSData *imageData =[NSData dataWithContentsOfURL:imageURL];
+    self.videoImage.image = [UIImage imageWithData:imageData];
 }
 
 @end

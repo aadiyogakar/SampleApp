@@ -8,6 +8,7 @@
 
 #import "VideoViewController.h"
 #import "Video.h"
+#import "VideoDetailsViewController.h"
 
 @interface VideoViewController ()
 
@@ -15,6 +16,32 @@
 
 @implementation VideoViewController {
     NSMutableArray *videos;
+}
+
+- (Video *)findVideoWithTitle:(NSString *)title
+{
+    for (Video *video in videos) {
+        if ([video.title isEqualToString:title]) {
+            return video;
+            break;
+        }
+    }
+    Video *v = nil;
+    return v;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"details"]) {
+        if ([segue.destinationViewController isKindOfClass:[VideoDetailsViewController class]]) {
+            VideoDetailsViewController *vdvc = (VideoDetailsViewController *)segue.destinationViewController;
+            UITableViewCell *cell = (UITableViewCell *)sender;
+            UILabel *titleLabel = (UILabel *)[cell viewWithTag:101];
+            NSString *title = titleLabel.text;
+            Video *video = [self findVideoWithTitle:title];
+            [vdvc setVideo:video];
+        }
+    }
 }
 
 - (void)getVideoDetailsFromJSONData: (NSData *)data
@@ -29,11 +56,15 @@
     Video *video = nil;
     NSDictionary *snippet;
     NSDictionary *thumbnails;
+    NSDictionary *id;
     for (i = 0; i < 5 ;i++) {
         video = [Video new];
         snippet = [[result objectAtIndex:i] objectForKey:@"snippet"];
+        id = [[result objectAtIndex:i] objectForKey:@"id"];
+        video.videoId = [id objectForKey:@"videoId"];
         thumbnails =[snippet objectForKey:@"thumbnails"];
         video.imageURL = [[thumbnails objectForKey:@"default"] objectForKey:@"url"];
+        video.imageURLHD = [[thumbnails objectForKey:@"high"] objectForKey:@"url"];
         video.title = [snippet objectForKey:@"title"];
         video.description = [snippet objectForKey:@"description"];
         [videos addObject:video];
@@ -49,16 +80,10 @@
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:nil action:nil];
     [[self navigationItem] setBackBarButtonItem:backButton];
     
-    NSURL *url = [NSURL URLWithString:@"https://www.googleapis.com/youtube/v3/search?part=id%2Csnippet&maxResults=5&q=flipkart&key=AIzaSyCkwJOFCAkQyr7tJHBbAxpJTQxywv516L8"];
+    NSURL *url = [NSURL URLWithString:@"https://www.googleapis.com/youtube/v3/search?part=id%2Csnippet&maxResults=5&q=bayern&key=AIzaSyCkwJOFCAkQyr7tJHBbAxpJTQxywv516L8"];
     NSData *data = [NSData dataWithContentsOfURL:url];
     
     [self getVideoDetailsFromJSONData:data];
-    
-    Video * video1 = [Video new];
-    video1.title = @"one";
-    video1.description = @"fsd";
-    
-    [videos addObject:video1];
     
     // Remove table cell separator
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];

@@ -13,5 +13,7 @@
 @synthesize title;
 @synthesize description;
 @synthesize imageURL;
+@synthesize imageURLHD;
+@synthesize videoId;
 
 @end
